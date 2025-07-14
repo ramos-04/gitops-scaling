@@ -38,16 +38,18 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
 
 - Set up an **AWS Budget** to monitor your spending and receive alerts if your costs exceed or are forecasted to exceed your defined thresholds. Start with a simple monthly budget.
 
-- Define a **tagging strategy** (e.g. 'Project', 'Environment', 'Owner', 'CostCenter') and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
+- Define a **Tagging Strategy** (e.g. 'Project', 'Environment', 'Owner', 'CostCenter') and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
 
   
 ## Launch and setup EKS cluster and ArgoCD
 
-- Configure the input variables for this terraform project as per your setup in the 'IAC/argocd-app/terraform.tfvars' file.
-
 - Kindly go to the IAC/cluster path
    ```bash
    $ cd  IAC/cluster
+   
+- Configure the input variables for this terraform project in the 'IAC/cluster/terraform.tfvars' file as per your setup.
+
+
 
 - Initialize terraform
    ```bash
