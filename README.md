@@ -84,7 +84,8 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls 
   ```bash
   $ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
   $ helm upgrade --install metrics-server metrics-server/metrics-server --set replicas=2
-
+  ```
+  
   https://github.com/kubernetes-sigs/metrics-server?tab=readme-ov-file#high-availability
 
   https://artifacthub.io/packages/helm/metrics-server/metrics-server
