@@ -1,34 +1,35 @@
 # gitops-scaling
+
 This repository host source code to launch an EKS cluster using Terraform, spin up a powerful scaling solution, build and deploy sample CORS proxy server and mock target server applications using GitOps CICD in the form of containerised kubernetes microservices(pods) leveraging GitHub Actions & ArgoCD and eventually performing load testing on the solution using Jmeter tool to validate the scaling and high availability aspects.
 
 
 ## Prerequisites:
 
-- AWS account is created as per below step 1 and you have the required privileges 
-- Ensure the below software are installed in your machine
+- AWS Cloud account should be created following the best practice guidelines highlighted in the following section. 
+- Ensure the below software are installed in your local machine
 1. Terraform 
 2. AWS CLI
 3. Kubectl
 4. Lens (optional)
-- Ensure AWS CLI and Terraform software are authenticated with your AWS account where you wish to provision the resources.
+- Ensure AWS CLI and Terraform software are authenticated with your AWS Cloud account across which you wish to provision the cloud resources.
 
 
 ## AWS Account creation
 
-- Secure Your Root User Account
+- **Secure Your Root User Account**
     1. Never use the Root User for daily tasks. The root user has unrestricted access to all services and resources in your account.
     2. Enable Multi-Factor Authentication (MFA) for the Root User. This is the single most important security step. You can use a strong virtual MFA (e.g., Google Authenticator, Authy). Store the recovery codes securely.
     3. Create a Strong, Unique Password: Ensure it meets AWS's complexity requirements and is not reused anywhere else. Store it in a secure password manager.
     4. Lock away Root User Credentials - After enabling MFA and creating an admin user (next step), sign out of the root account and only use it for tasks that require root access (e.g., changing account settings, closing the account, interacting with AWS Support plans).
     5. Set Alternate Contacts -  Go to "Account settings" in the console and set up alternate contacts for billing, operations, and security. Use group email aliases if possible.
 
-- Create an Administrator IAM User
+- **Create an Administrator IAM User**
     1. Create a new IAM user (e.g. admin)
     2. Attach the AWS managed policy `AdministratorAccess` to this new IAM user. This gives the user full administrative control without being the root user.
     3. Enable MFA for this Administrator User just like the root user
     4. Generate Access Keys (Only if Programmatic Access is Needed) If you need to use the AWS CLI, SDKs, or tools like Terraform, generate access keys for this user. Store them securely (e.g., in a password manager or secrets manager) and never embed them directly in code or commit them to source control.
 
-- Implement Principle of Least Privilege for IAM
+- **Implement Principle of Least Privilege for IAM**
    1. Create IAM Groups Group users with similar job functions (e.g., `Developers`, `Security-Auditors`, `Read-Only`).
    2. Attach Policies to Groups (Not Users): Assign permissions to these groups, and then add users to the appropriate groups. This simplifies permission management.
    3. Use Managed Policies First Start with AWS managed policies, then create customer-managed policies for fine-grained control as needed.
@@ -214,8 +215,10 @@ Feel free to refer the load testing artifacts(reports, test plan, etc) at the pa
 
 - Compare the different scaling metrics like cpu, memory, request count considering your product requirements, setup & future vision and choose a metric that fits the best so that you can achieve the best scaling results.
 
-- As depicted in our load testing report, we have achieved a success rate of 91.34% and an error rate of 8.66% with the HTTP responses. The error rate existed as our applications namely cors-proxy-server and target-mock-server are sample applications holding basic handling. They are not robust production ready applications. To achieve robust scaling, proper handling need to be done in the application code as well. 
+- As depicted in our load testing report, we have achieved a success rate of 91.34% and an error rate of 8.66% with the HTTP responses. The error rate existed as our applications namely cors-proxy-server and target-mock-server are sample applications with basic code handling. They are not coded as robust production ready applications. To achieve robust scaling with 0% error rate, these applications should be coded robustly handling all the edge scenarious. 
 
+- This setup is tested with a traffic increasing from 0 to 1000 requests per second. For higher loads like 10k, 100k requests/second, you do not need to explicitly modify the infrastructure configurations as karpenter will perform automatic scale up and scale down operations as the traffic increases and decreases respectively.
+  
 - As a good practice, high availability should be configured for the cluster add-on software as well. Pod Disruption Budget can be leveraged to boost high availability
 
 - Terraform(IAC) should perform the EKS cluster provisioning and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). After that GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc).
