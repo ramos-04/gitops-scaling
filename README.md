@@ -34,11 +34,11 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
    3. Commence with AWS managed policies, then create customer-managed policies for fine-grained control as needed.
    4. Instead of embedding access keys in applications, use IAM Roles for EC2 instances, Lambda functions, etc. This provides temporary credentials that are automatically rotated, significantly enhancing security.
 
-- Enforce Strong Password Policy for IAM Users. Go to "Account settings" in IAM and set a strong password policy (minimum length, character types, expiry).
+- Enforce **Strong Password Policy** for IAM Users. Go to "Account settings" in IAM and set a strong password policy (minimum length, character types, expiry).
 
-- Set up an AWS Budget to monitor your spending and receive alerts if your costs exceed or are forecasted to exceed your defined thresholds. Start with a simple monthly budget.
+- Set up an **AWS Budget** to monitor your spending and receive alerts if your costs exceed or are forecasted to exceed your defined thresholds. Start with a simple monthly budget.
 
-- Define a tagging strategy (e.g. 'Project', 'Environment', 'Owner', 'CostCenter') and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
+- Define a **tagging strategy** (e.g. 'Project', 'Environment', 'Owner', 'CostCenter') and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
 
   
 ## Launch and setup EKS cluster and ArgoCD
