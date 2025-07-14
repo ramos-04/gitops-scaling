@@ -182,7 +182,7 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls 
 
   <img width="1487" height="715" alt="scale-down-nodes-part-1" src="https://github.com/user-attachments/assets/51dc775a-373a-40cd-bb87-48770bc12cbd" />
 
-<img width="1465" height="718" alt="scale-down-nodes-part-2" src="https://github.com/user-attachments/assets/952b9b31-d432-4115-86ae-8267a29752be" />
+  <img width="1465" height="718" alt="scale-down-nodes-part-2" src="https://github.com/user-attachments/assets/952b9b31-d432-4115-86ae-8267a29752be" />
 
 - Load testing Graph
 
@@ -199,11 +199,11 @@ Feel free to refer the load testing artifacts(reports, test plan, etc) at the pa
 
 ## High Availability
 
-- We have defined high availability at the node level as well as the pod level. 
+- We have defined high availability at the **node level** as well as at the **pod level**. 
 
-- For applications, we have used a kubernetes offering named 'topologySpreadConstraints' which will automatically launch and maintain our application pods in different AWS Availability Zones(AZs)
+- For pod level, we have used a kubernetes offering namely **topologySpreadConstraints** which will automatically launch and maintain our application pods in different unique AWS Availability Zones(AZs)
 
-- For nodes, we have performed configurations in the karpenter so that it smartly launches nodes in different AWS AZs.
+- For node level, we have performed configurations in the karpenter so that it smartly launches nodes in different AWS AWS Availability Zones(AZs).
 
 
 ## Future Improvements/Limitations
