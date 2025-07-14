@@ -76,7 +76,7 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
 
 - Install Karpenter software in the EKS cluster by kindly following the instructions from the below official documentation. This documentation cites steps to install Karpenter in an already provisioned EKS cluster.
 
-https://karpenter.sh/docs/getting-started/migrating-from-cas/
+  https://karpenter.sh/docs/getting-started/migrating-from-cas/
 
 As a reference, please do not hesitate to use the Karpenter configuration yamls namely 'nodepool-ec2nodeclass.yaml' and 'karpenter.yaml' stored in this repository at the path 'karpenter/' folder. Alternatively, you can configure them as per your own preferences.
 
@@ -85,18 +85,18 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls 
   $ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
   $ helm upgrade --install metrics-server metrics-server/metrics-server --set replicas=2
 
-https://github.com/kubernetes-sigs/metrics-server?tab=readme-ov-file#high-availability
+  https://github.com/kubernetes-sigs/metrics-server?tab=readme-ov-file#high-availability
 
-https://artifacthub.io/packages/helm/metrics-server/metrics-server
+  https://artifacthub.io/packages/helm/metrics-server/metrics-server
 
 
 ## Continuous Integration(CI) using GitHub Actions
 
-- Create an ECR repository in AWS Cloud and configure access between GitHub Actions and it using OIDC. As a best practice, avoid storing long term AWS access credentials in GitHub Actions and instead leverage Web Identity Federation Authentication(OIDC) which offers role based authentication using short term dynamically created tokens. Kindly follow the steps in the below document to establish this authentication. 
+- Create an AWS ECR repository in AWS Cloud, configuring access between itself and GitHub Actions. As a best practice, please avoid storing long term AWS access/secret keys credentials in GitHub Actions. Instead, kindly leverage Web Identity Federation Authentication(OIDC) which offers role based authentication using short term dynamically created tokens. Kindly follow the steps in the below document to establish this sort of authentication. 
 
   https://devopscube.com/github-actions-oidc-aws/
 
-- CICD pipelines are created and stored as 'configuration as code' in the Github workflow yaml files of this repository at the path ".github/workflows". As soon as you merge a Pull Request in the 'main' branch, a CICD build will trigger which will build docker images for the applications namely CORS Proxy Server and Mock Target Server and upload them in the ECR repository. Kindly merge a Pull Request in the 'main' branch to build the applications.
+- CI pipelines are already provisioned and stored as 'configuration as code' in the Github workflow yaml files of this repository at the path ".github/workflows". As soon as you merge a Pull Request(PR) in the 'main' branch, a CI build will trigger which will build docker images for the applications namely cors-proxy-server and mock-target-server and upload them in the ECR repository. Thus, kindly merge a Pull Request in the 'main' branch to build the applications.
 
 
 ## Launch and setup ArgoCD Application (CD using GitOps)
