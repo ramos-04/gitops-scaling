@@ -1,5 +1,5 @@
 # gitops-scaling
-This repository host source code to launch an EKS cluster using Terraform, install a powerful scaling software, build and run a sample CORS proxy server and a mock target server containerised applications in the form of kubernetes microservices(pods) leveraging GitHub Actions and eventually carry out load testing on the solution using Jmeter to validate the scaling aspect.
+This repository host source code to launch an EKS cluster using Terraform, spin up a powerful scaling solution, build and deploy sample CORS proxy server and mock target server applications using GitOps CICD in the form of containerised kubernetes microservices(pods) leveraging GitHub Actions & ArgoCD and eventually performing load testing on the solution using Jmeter tool to validate the scaling and high availability aspects.
 
 
 ## Prerequisites:
