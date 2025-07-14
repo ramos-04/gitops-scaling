@@ -72,15 +72,15 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
 - This setup will launch a base EKS managed node group which will host critical kubernetes add-on software like karpenter, metrics server, coredns, etc. Besides that, Karpenter will provision and manage node pools to host the remaining application workloads.
 
 
-## Installation and Configuration of Scaling Software
+## Installation and Configuration of the Scaling Software
 
 - Install Karpenter software in the EKS cluster by kindly following the instructions from the below official documentation. This documentation cites steps to install Karpenter in an already provisioned EKS cluster.
 
 https://karpenter.sh/docs/getting-started/migrating-from-cas/
 
-As a reference, you can use the Karpenter configuration yamls namely 'nodepool-ec2nodeclass.yaml' and 'karpenter.yaml'  stored in this repository in the 'karpenter' folder. Alternatively, you can configure them as per your own preferences.
+As a reference, please do not hesitate to use the Karpenter configuration yamls namely 'nodepool-ec2nodeclass.yaml' and 'karpenter.yaml' stored in this repository at the path 'karpenter/' folder. Alternatively, you can configure them as per your own preferences.
 
-- Install Metrics Server in high availability mode 
+- Install Metrics Server in the EKS cluster with the high availability mode 
   ```bash
   $ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
   $ helm upgrade --install metrics-server metrics-server/metrics-server --set replicas=2
