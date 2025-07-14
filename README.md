@@ -1,6 +1,7 @@
 # gitops-scaling
 This repository host source code to launch an EKS cluster using Terraform, install a powerful scaling software, build and run a sample CORS proxy server and a mock target server containerised applications in the form of kubernetes microservices(pods) leveraging GitHub Actions and eventually carry out load testing on the solution using Jmeter to validate the scaling aspect.
 
+
 ## Prerequisites:
 
 - AWS account is created as per below step 1 and you have the required privileges 
@@ -39,7 +40,7 @@ This repository host source code to launch an EKS cluster using Terraform, insta
 
 - Activate Cost Allocation Tags: Define a tagging strategy (e.g., `Project`, `Environment`, `Owner`, `CostCenter`) and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
 
-
+  
 ## Launch and setup EKS cluster and ArgoCD
 
 - Configure the input variables for this terraform project as per your setup in the 'IAC/argocd-app/terraform.tfvars' file.
@@ -210,11 +211,11 @@ Kindly refer the load testing artifacts(reports, test plan, etc) at the path 'lo
 
 - Error: error: code = Unknown desc = error getting credentials - err: exec: "docker-credential-desktop.exe": executable file not found in $PATH, out: ``
 
-  Solution: https://stackoverflow.com/questions/65896681/exec-docker-credential-desktop-exe-executable-file-not-found-in-path
+  <u>Solution</u>: https://stackoverflow.com/questions/65896681/exec-docker-credential-desktop-exe-executable-file-not-found-in-path
 
 - Error: Karpenter/coredns/kubeproxy pods went into pending state
  
-  Solution: Please check the pod events by describing the pod to seek more insight on the reason. If it says, no memory available, or no nodes available to run pod, then kindly ensure the base EKS managed node group whichyou have launched to run critical workloads like coredns, kube-proxy, karpenter itself have enough number of nodes with enough CPU and Memory capacity.
+  <u>Solution</u>: Please check the pod events by describing the pod to seek more insight on the reason. If it says, no memory available, or no nodes available to run pod, then kindly ensure the base EKS managed node group whichyou have launched to run critical workloads like coredns, kube-proxy, karpenter itself have enough number of nodes with enough CPU and Memory capacity.
 
 
 
