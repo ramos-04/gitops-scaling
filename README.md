@@ -156,9 +156,14 @@ https://artifacthub.io/packages/helm/metrics-server/metrics-server
 
 - As the load increases, cpu consumption of the applications will spike and additional replica pods for them will be created by HPA. Furthermore, if the capacity of the kubernetes node(EC2 machine) which holds these pods becomes full, then Karpenter will automatically launch additional kubernetes nodes(EC2 machines) to host the further replica pods. Similarly, as the load drops, Karpenter will automatically decommission the unnecessary nodes and HPA will decommission the unnecessary replica pods. Thus, in this way, we have achieved seamless scaling across kubernetes pod and kubernetes nodes.
 
-- A steady setup with minumum pods and kubernetes nodes running
+- A steady setup with minumum pods and minimum kubernetes nodes running
 
-Paste the screenshot
+  <img width="1473" height="743" alt="scale-start-nodes-part-0" src="https://github.com/user-attachments/assets/a6ffdd25-7721-4d09-8f5e-0add475ce94d" />
+
+  <img width="1503" height="716" alt="scale-start-pods-part-0" src="https://github.com/user-attachments/assets/97065c1d-b042-4b73-85e9-dbfcc991180f" />
+
+ 
+  
 
 - Additional kubernetes replica pods getting launched automatically when the load increases
 
