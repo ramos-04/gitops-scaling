@@ -162,30 +162,39 @@ https://artifacthub.io/packages/helm/metrics-server/metrics-server
 
   <img width="1503" height="716" alt="scale-start-pods-part-0" src="https://github.com/user-attachments/assets/97065c1d-b042-4b73-85e9-dbfcc991180f" />
 
- 
-  
-
 - Additional kubernetes replica pods getting launched automatically when the load increases
 
-Paste the screenshot
+  <img width="1492" height="687" alt="scale-up-pods-part-1" src="https://github.com/user-attachments/assets/ddf21f34-0d8d-496f-828c-c8a983540ce2" />
+
+  <img width="1488" height="706" alt="scale-up-pods-part-2" src="https://github.com/user-attachments/assets/8ed04377-0264-4226-97b8-55e7ae6d07b4" />
 
 - Additional kubernetes nodes getting launched automatically when the load increases
 
-Paste the screenshot
+  <img width="1487" height="724" alt="scale-up-nodes-part-1" src="https://github.com/user-attachments/assets/63b975cc-8c7d-4fba-a761-a657666ee493" />
 
 - Kubernetes replica pods getting killed automatically when the load decreases
 
-Paste the screenshot
+  <img width="1498" height="706" alt="scale-down-pods-part-1" src="https://github.com/user-attachments/assets/3679a7db-ef07-43b5-ac41-0ab6455a2134" />
+
+  <img width="1478" height="730" alt="scale-down-pods-part-2" src="https://github.com/user-attachments/assets/1c1a08eb-3f5e-4a93-9139-f5b54f3cff58" />
 
 - Kubernetes nodes getting killed automatically when the load decreases
 
-Paste the screenshot
+  <img width="1487" height="715" alt="scale-down-nodes-part-1" src="https://github.com/user-attachments/assets/51dc775a-373a-40cd-bb87-48770bc12cbd" />
+
+<img width="1465" height="718" alt="scale-down-nodes-part-2" src="https://github.com/user-attachments/assets/952b9b31-d432-4115-86ae-8267a29752be" />
 
 - Load testing Graph
 
-Paste the screenshot
+  <img width="1318" height="708" alt="RPS-graph" src="https://github.com/user-attachments/assets/e1bdf23d-c598-4ff4-8b1b-000070f5cddd" />
 
-Kindly refer the load testing artifacts(reports, test plan, etc) at the path 'load-testing/'
+- HPA CPU Consumption
+
+  <img width="803" height="598" alt="cpu-cors-proxy-server" src="https://github.com/user-attachments/assets/e9b865dd-ea83-4f2c-9aaa-0f6d15668056" />
+
+  <img width="828" height="799" alt="cpu-mock-target-server" src="https://github.com/user-attachments/assets/a963119d-39da-4218-b0d0-e7a594b29437" />
+
+Feel free to refer the load testing artifacts(reports, test plan, etc) at the path 'load-testing/'
 
 
 ## High Availability
