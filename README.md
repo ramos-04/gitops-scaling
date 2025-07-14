@@ -17,29 +17,28 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
 ## AWS Account creation
 
 - **Secure Your Root User Account**
-    1. Never use the Root User for daily tasks. The root user has unrestricted access to all services and resources in your account.
-    2. Enable Multi-Factor Authentication (MFA) for the Root User. This is the single most important security step. You can use a strong virtual MFA (e.g., Google Authenticator, Authy). Store the recovery codes securely.
-    3. Create a Strong, Unique Password: Ensure it meets AWS's complexity requirements and is not reused anywhere else. Store it in a secure password manager.
-    4. Lock away Root User Credentials - After enabling MFA and creating an admin user (next step), sign out of the root account and only use it for tasks that require root access (e.g., changing account settings, closing the account, interacting with AWS Support plans).
-    5. Set Alternate Contacts -  Go to "Account settings" in the console and set up alternate contacts for billing, operations, and security. Use group email aliases if possible.
+    1. Never use the 'root user' for daily tasks. The 'root user' has unrestricted access to all services and resources in your account.
+    2. Enable Multi-Factor Authentication (MFA) for the 'root user'. You can use a virtual MFA (e.g. Google Authenticator, Authy). 
+    3. Create a strong, unique Password: Ensure it meets AWS's complexity requirements and is not reused anywhere else. 
+    4. Lock away Root User Credentials - After enabling MFA and creating an admin user (next step), sign out of the root account and only use it for tasks that require root access (e.g. changing account settings, closing the account, interacting with AWS Support plans).
 
 - **Create an Administrator IAM User**
     1. Create a new IAM user (e.g. admin)
     2. Attach the AWS managed policy `AdministratorAccess` to this new IAM user. This gives the user full administrative control without being the root user.
-    3. Enable MFA for this Administrator User just like the root user
-    4. Generate Access Keys (Only if Programmatic Access is Needed) If you need to use the AWS CLI, SDKs, or tools like Terraform, generate access keys for this user. Store them securely (e.g., in a password manager or secrets manager) and never embed them directly in code or commit them to source control.
+    3. Enable MFA for this Administrator User just like the 'root user'
+    4. Generate Access Keys (only if programmatic Access is needed) If you need to use the AWS CLI, SDKs, or tools like Terraform, generate access keys for this user. Store them securely and never embed them directly in code or commit them to source control.
 
 - **Implement Principle of Least Privilege for IAM**
-   1. Create IAM Groups Group users with similar job functions (e.g., `Developers`, `Security-Auditors`, `Read-Only`).
-   2. Attach Policies to Groups (Not Users): Assign permissions to these groups, and then add users to the appropriate groups. This simplifies permission management.
-   3. Use Managed Policies First Start with AWS managed policies, then create customer-managed policies for fine-grained control as needed.
-   4. Use IAM Roles for Applications/Services: Instead of embedding access keys in applications, use IAM Roles for EC2 instances, Lambda functions, ECS tasks, etc. This provides temporary credentials that are automatically rotated, significantly enhancing security.
+   1. Create IAM Groups to group the users with similar job functions (e.g., 'Developers', 'Security-Auditors', 'Read-Only').
+   2. Attach permission policies to Groups (Not Users) and then add users to the appropriate groups. This simplifies permission management.
+   3. Commence with AWS managed policies, then create customer-managed policies for fine-grained control as needed.
+   4. Instead of embedding access keys in applications, use IAM Roles for EC2 instances, Lambda functions, etc. This provides temporary credentials that are automatically rotated, significantly enhancing security.
 
 - Enforce Strong Password Policy for IAM Users. Go to "Account settings" in IAM and set a strong password policy (minimum length, character types, expiry).
 
 - Set up an AWS Budget to monitor your spending and receive alerts if your costs exceed or are forecasted to exceed your defined thresholds. Start with a simple monthly budget.
 
-- Activate Cost Allocation Tags: Define a tagging strategy (e.g., `Project`, `Environment`, `Owner`, `CostCenter`) and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
+- Define a tagging strategy (e.g. 'Project', 'Environment', 'Owner', 'CostCenter') and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
 
   
 ## Launch and setup EKS cluster and ArgoCD
