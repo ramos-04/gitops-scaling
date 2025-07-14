@@ -208,30 +208,30 @@ Feel free to refer the load testing artifacts(reports, test plan, etc) at the pa
 
 ## Future Improvements/Limitations
 
-- Leverage AWS Organization service to create a separate unique AWS accounts for different projects or environments.
+- Leverage **AWS Organization** service to create separate unique AWS accounts for different projects or environments(dev, qa, uat, production).
 
-- As a best practice, one should avoid using long term static credentials(AWS secret/access keys) to establish authentication between AWS CLI and Terraform with AWS Cloud, instead, it will be a good idea to use token based AWS SSO authentication which would dynamically generate temporary short-term credentials.
+- As a best practice, one should avoid using long term static credentials(AWS secret/access keys) to establish authentication between AWS CLI/Terraform and AWS Cloud. Instead, it will be a good idea to use token based **AWS Single Sign On(SSO)** authentication which would dynamically generate temporary short-term credentials.
 
-- Compare the different scaling metrics like cpu, memory, request count considering your product requirements, setup & future vision and choose a metric that fits the best so that you can achieve the best scaling results.
+- Compare and analyze the different scaling metrics like cpu, memory, request count considering your product requirements, setup & future vision and then choose a metric for scaling that fits the best for you, so that you can achieve the best scaling results.
 
-- As depicted in our load testing report, we have achieved a success rate of 91.34% and an error rate of 8.66% with the HTTP responses. The error rate existed as our applications namely cors-proxy-server and target-mock-server are sample applications with basic code handling. They are not coded as robust production ready applications. To achieve robust scaling with 0% error rate, these applications should be coded robustly handling all the edge scenarious. 
+- As depicted in our load testing report, we have achieved a success rate of 91.34% and an error rate of 8.66% with the HTTP responses. The error rate occured as our applications namely cors-proxy-server and target-mock-server are simple sample applications with basic code handling. They are not robustly coded production-ready applications. To achieve robust scaling with 0% error rate, these applications should be coded more efficiently handling all the edge scenarious. 
 
-- This setup is tested with a traffic increasing from 0 to 1000 requests per second. For higher loads like 10k, 100k requests/second, you do not need to explicitly modify the infrastructure configurations as karpenter will perform automatic scale up and scale down operations as the traffic increases and decreases respectively.
+- This setup has been tested with a traffic rising from 0 to 1000 requests per second. For higher loads like 10k, 100k requests/second, you do not need to explicitly modify the existing infrastructure configurations as karpenter will perform automatic scale up and scale down operations as the traffic increases and decreases respectively.
   
 - As a good practice, high availability should be configured for the cluster add-on software as well. Pod Disruption Budget can be leveraged to boost high availability
 
-- Terraform(IAC) should perform the EKS cluster provisioning and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). After that GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc).
+- Terraform(IAC) should perform the EKS cluster provisioning and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). Post that, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc).
 
 
 ## Troubleshooting Section:
 
 - Error: error: code = Unknown desc = error getting credentials - err: exec: "docker-credential-desktop.exe": executable file not found in $PATH, out: ``
 
-  <u>Solution</u>: https://stackoverflow.com/questions/65896681/exec-docker-credential-desktop-exe-executable-file-not-found-in-path
+  **Solution**: https://stackoverflow.com/questions/65896681/exec-docker-credential-desktop-exe-executable-file-not-found-in-path
 
 - Error: Karpenter/coredns/kubeproxy pods went into pending state
  
-  <u>Solution</u>: Please check the pod events by describing the pod to seek more insight on the reason. If it says, no memory available, or no nodes available to run pod, then kindly ensure the base EKS managed node group whichyou have launched to run critical workloads like coredns, kube-proxy, karpenter itself have enough number of nodes with enough CPU and Memory capacity.
+  **Solution**: Please check the pod events by describing the pod to seek more insight on the reasons for failure. If it says, no memory available, or no nodes available to run pod, kindly ensure the base EKS managed node group which you have launched to run critical cluster add-ons like coredns, kube-proxy, karpenter itself have enough number of nodes with enough cpu and memory capacity.
 
 
 
