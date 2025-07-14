@@ -49,8 +49,6 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
    
 - Configure the input variables for this terraform project in the 'IAC/cluster/terraform.tfvars' file as per your setup.
 
-
-
 - Initialize terraform
    ```bash
    $ terraform init
@@ -67,12 +65,11 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
    ```bash
    $ aws eks update-kubeconfig --region <region-name> --name <cluster-name>
 
-- Check whether you are able to access the EKS cluster. If you are using Lens tool, feel free to validate the access to the cluster using it.
+- Check whether you are able to access the EKS cluster through command line. Alternatively, should you be using the Lens tool, feel free to validate the access to the cluster using it.
    ```bash
    $ kubectl get nodes
 
-
-- Our setup will launch a base EKS managed node group which will host critical kubernetes add-on software like karpenter, metrics server, coredns, etc. Besides that, Karpenter will provision and manage the nodes for the remaining application workloads.
+- This setup will launch a base EKS managed node group which will host critical kubernetes add-on software like karpenter, metrics server, coredns, etc. Besides that, Karpenter will provision and manage node pools to host the remaining application workloads.
 
 
 ## Installation and Configuration of Scaling Software
