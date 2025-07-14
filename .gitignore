@@ -1,0 +1,19 @@
+# Terraform files to ignore
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+*.backup
+.terraform/
+.terraform.lock.hcl
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl  # Optional: Keep if you want deterministic providers
+
+# Optional: IDE and OS files
+.vscode/
+.idea/
+.DS_Store
