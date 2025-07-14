@@ -1,7 +1,6 @@
 # Terraform files to ignore
 *.tfstate
 *.tfstate.*
-*.tfvars
 *.tfplan
 *.backup
 .terraform/
