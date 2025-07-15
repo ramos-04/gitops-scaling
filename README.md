@@ -102,11 +102,11 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls 
 
 ## Launch and setup ArgoCD Application (CD using GitOps)
 
-- Go to the  'IAC/argocd-app' path
+- Go to the  'IAC/add-ons' path
   ```bash 
-  $ cd ../argocd-app
+  $ cd ../add-ons
    
-- You'll need to fetch the outputs from the 'IAC/cluster' terraform project and pass it to the 'IAC/argocd-app' terraform project. 
+- You'll need to fetch the outputs from the 'IAC/cluster' terraform project and pass it to the current 'IAC/add-ons' terraform project. 
   ```bash 
   $ CLUSTER_NAME=$(terraform -chdir=../cluster output -raw cluster_name)
   $ CLUSTER_ENDPOINT=$(terraform -chdir=../cluster output -raw cluster_endpoint)
@@ -114,7 +114,7 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls 
   $ ARGOCD_NAMESPACE=$(terraform -chdir=../cluster output -raw argocd_namespace)
   ```
   
-- Configure the remaining input variables for this terraform project as per your setup in the 'IAC/argocd-app/terraform.tfvars' file.
+- Configure the remaining input variables for this terraform project as per your setup in the 'IAC/add-ons/terraform.tfvars' file.
 
 - Validate the resources that terraform is about to provision
   ```bash 
@@ -145,16 +145,16 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls 
 
       https://argo-cd.readthedocs.io/en/release-1.8/user-guide/private-repositories/
 
-- After performing these steps, the applications namely cors-proxy-server and mock-target-server will automatically get deployed in the EKS cluster using GitOps(ArgoCD). In this way, we have built a CICD pipeline using a pull based model instead of a push based model. We have leveraged GitOps to make this happen.
+- After performing these one time steps, the containerised applications namely cors-proxy-server and mock-target-server will automatically get deployed in the EKS cluster using GitOps(ArgoCD). A load balancer in AWS Cloud will also get automatically launched which will make the cors-proxy-server application accessible from the internet. In this way, we have built a CICD framework using a ***pull based model*** instead of a push based model leveraging ***GitOps***.
 
 
 ## Load Testing
 
-- You can create a test plan in a tool like Jmeter to perform load testing by firing multiple requests to the cors proxy server. As a reference, you can use the test plan uploaded in this git repository at the path 'load-testing/jmeter-reports/RPS-test-plan.jmx'. You can tweak the plan as per your preferences. Please do not forget to configure the AWS load balancer ARN and Port as per your setup in the test plan.
+- You can create a test plan in a tool like ***Jmeter*** to perform load testing by firing multiple requests to the cors-proxy-server application. As a reference, you can use the test plan uploaded in this git repository at the path 'load-testing/jmeter-reports/RPS-test-plan.jmx'. You can tweak the plan as per your preferences. Please do not forget to configure the AWS load balancer ARN and Port as per your setup in the test plan configurations.
 
 - Initiate load testing by sending multiple requests to the cors-proxy-server application.
 
-- As the load increases, cpu consumption of the applications will spike and additional replica pods for them will be created by HPA. Furthermore, if the capacity of the kubernetes node(EC2 machine) which holds these pods becomes full, then Karpenter will automatically launch additional kubernetes nodes(EC2 machines) to host the further replica pods. Similarly, as the load drops, Karpenter will automatically decommission the unnecessary nodes and HPA will decommission the unnecessary replica pods. Thus, in this way, we have achieved seamless scaling across kubernetes pod and kubernetes nodes.
+- As the load increases, cpu consumption of the cors-proxy-server and mock-target-server applications will spike and additional replica pods for them will automatically be created by ***Horizontal Pod Autoscaler(HPA)***. Moving ahead, should the capacity of the kubernetes node(EC2 machine) which holds these pods become full, Karpenter will automatically launch additional kubernetes nodes(EC2 machines) to host and accommodate the further replica pods. Similarly, as the load drops, Karpenter will automatically decommission the unnecessary nodes and HPA will decommission the unnecessary replica pods. Thus, in this way, we have achieved seamless scaling at the ***kubernetes pod*** and ***kubernetes node*** levels.
 
 - A steady setup with minumum pods and minimum kubernetes nodes running
 
@@ -194,7 +194,7 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls 
 
   <img width="828" height="799" alt="cpu-mock-target-server" src="https://github.com/user-attachments/assets/a963119d-39da-4218-b0d0-e7a594b29437" />
 
-Feel free to refer the load testing artifacts(reports, test plan, etc) at the path 'load-testing/'
+Feel free to refer the other load testing artifacts(reports, test plan, etc) at the path 'load-testing/'
 
 
 ## High Availability
@@ -203,7 +203,7 @@ Feel free to refer the load testing artifacts(reports, test plan, etc) at the pa
 
 - For pod level, we have used a kubernetes offering namely **topologySpreadConstraints** which will automatically launch and maintain our application pods in different unique AWS Availability Zones(AZs)
 
-- For node level, we have performed configurations in the karpenter so that it smartly launches nodes in different AWS AWS Availability Zones(AZs).
+- For node level, we have performed configurations in karpenter, so that it smartly launches nodes in different AWS Availability Zones(AZs).
 
 
 ## Future Improvements/Limitations
@@ -214,11 +214,13 @@ Feel free to refer the load testing artifacts(reports, test plan, etc) at the pa
 
 - Compare and analyze the different scaling metrics like cpu, memory, request count considering your product requirements, setup & future vision and then choose a metric for scaling that fits the best for you, so that you can achieve the best scaling results.
 
-- As depicted in our load testing report, we have achieved a success rate of 91.34% and an error rate of 8.66% with the HTTP responses. The error rate occured as our applications namely cors-proxy-server and target-mock-server are simple sample applications with basic code handling. They are not robustly coded production-ready applications. To achieve robust scaling with 0% error rate, these applications should be coded more efficiently handling all the edge scenarious. 
+- As depicted in our load testing report, we have achieved a success rate of 91.34% and an error rate of 8.66% with the HTTP responses. The error rate occured as our applications namely cors-proxy-server and target-mock-server are simple sample applications with basic code handling. They are not robustly coded production-ready applications. To achieve robust scaling with 0% error rate, these applications should be coded more efficiently handling all the edge cases. 
 
-- This setup has been tested with a traffic rising from 0 to 1000 requests per second. For higher loads like 10k, 100k requests/second, you do not need to explicitly modify the existing infrastructure configurations as karpenter will perform automatic scale up and scale down operations as the traffic increases and decreases respectively.
+- This setup has been tested with a traffic rising from 0 to 1000 requests per second. For higher loads like 10k, 100k requests/second, you do not need to explicitly modify the existing infrastructure configurations as we have already configured karpenter to perform automatic scale up and scale down operations as the traffic increases and decreases respectively.
   
-- As a good practice, high availability should be configured for the cluster add-on software as well. Pod Disruption Budget can be leveraged to boost high availability
+- As a good practice, high availability should be configured for the cluster add-ons software as well. ***Pod Disruption Budget*** can also be leveraged to boost high availability.
+
+- Tools like ***Kubecost and AWS Compute Optimizer*** can be used to right size the kubernetes nodes and resource limits for pods to shun under-utilization or over-utilization of resources which will further result in ***cost-saving***.
 
 - Terraform(IAC) should perform the EKS cluster provisioning and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). Post that, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc).
 
