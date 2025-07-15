@@ -1,5 +1,5 @@
 # Fetch default VPC ID
-data "aws_vpc" "default" {
+  data "aws_vpc" "default" {
   default = true
 }
 
@@ -26,21 +26,28 @@ resource "aws_ec2_tag" "eks_subnets_cluster" {
 }
 
 # EKS Cluster Module
+# This module is responsible for provisioning an Amazon Elastic Kubernetes Service (EKS) cluster.
+# It leverages the community-maintained 'terraform-aws-modules/eks/aws' module,
+# which simplifies EKS cluster creation and management.
 module "eks_cluster" {
-  source  = "terraform-aws-modules/eks/aws"
+  source  = "terraform-aws-modules/eks/aws"   # Specifies the source of the Terraform module. This points to the official AWS EKS module on the Terraform Registry.
   version = "~> 20.0"
 
   cluster_name    = var.cluster_name
   cluster_version = "1.31" # Or your desired version
 
   vpc_id                   = data.aws_vpc.default.id
-  subnet_ids               = data.aws_subnets.default.ids
+  subnet_ids               = data.aws_subnets.default.ids # Specifies the subnets where the worker nodes (EC2 instances) of the EKS cluster will be deployed.
   control_plane_subnet_ids = data.aws_subnets.default.ids
   cluster_endpoint_public_access  = true  # Explicitly enable public access for EKS control plane
   cluster_endpoint_private_access = false # Explicitly disable private access for EKS control plane
 
   enable_cluster_creator_admin_permissions = true
+  # If set to `true`, the IAM user or role that creates the EKS cluster will
+  # automatically be granted `system:masters` permissions within the cluster's
+  # Kubernetes RBAC. This simplifies initial access.
 
+  # This block configures the managed EKS add-ons. These are Amazon-provided controllers that enhance EKS functionality (e.g., networking, DNS).
   cluster_addons = {
     coredns = {
       most_recent = true
@@ -70,7 +77,6 @@ module "eks_cluster" {
 # IAM Role for the EKS Managed Node Group
 resource "aws_iam_role" "eks_managed_node_group" {
   name = "${var.cluster_name}-mng-role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -83,7 +89,6 @@ resource "aws_iam_role" "eks_managed_node_group" {
       },
     ]
   })
-
   tags = {
     Environment = "dev"
     ManagedBy   = "terraform"
@@ -138,12 +143,18 @@ resource "aws_eks_node_group" "initial_mng" {
   }
 }
 
+# This resource creates a dedicated Kubernetes namespace for the ArgoCD
+# application within the EKS cluster. Namespaces provide a way to
+# organize cluster resources and provide scope for names.
 resource "kubernetes_namespace" "argocd" {
   metadata {
     name = "argocd"
   }
 }
 
+# Helm Release for ArgoCD
+# This resource uses the Terraform Helm provider to deploy the ArgoCD
+# application into the Kubernetes cluster using its official Helm chart.
 resource "helm_release" "argocd" {
   name       = "argocd"
   repository = "https://argoproj.github.io/argo-helm"
@@ -155,6 +166,10 @@ resource "helm_release" "argocd" {
   depends_on = [kubernetes_namespace.argocd]
 }
 
+# Null Resource to Wait for ArgoCD Server Readiness
+# This null_resource is a Terraform construct used to run arbitrary commands
+# (provisioners) and introduce implicit dependencies. Here, it's used to
+# pause Terraform execution until the ArgoCD server deployment is ready.
 resource "null_resource" "wait_for_argocd_ready" {
   depends_on = [helm_release.argocd]
 
@@ -168,19 +183,20 @@ resource "null_resource" "wait_for_argocd_ready" {
   }
 }
 
-
 data "kubernetes_secret" "argocd_initial_password" {
   metadata {
-    name      = "argocd-initial-admin-secret"
-    namespace = kubernetes_namespace.argocd.metadata[0].name
-  }
+              name      = "argocd-initial-admin-secret"
+              namespace = kubernetes_namespace.argocd.metadata[0].name
+           }
   depends_on = [helm_release.argocd, null_resource.wait_for_argocd_ready]
 }
 
 data "kubernetes_service" "argocd_server" {
   metadata {
-    name      = "argocd-server"
-    namespace = kubernetes_namespace.argocd.metadata[0].name
-  }
+              name      = "argocd-server"
+              namespace = kubernetes_namespace.argocd.metadata[0].name
+           }
   depends_on = [helm_release.argocd, null_resource.wait_for_argocd_ready]
 }
+
+
