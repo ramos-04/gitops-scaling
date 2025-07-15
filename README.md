@@ -1,4 +1,4 @@
-# Scaling Using GitOps and IaC
+# Scaling and High Availability Using GitOps and IaC
 
 This repository hosts source code to launch an EKS cluster using Terraform, spin up a powerful scaling solution, build and deploy sample CORS proxy server and a mock target server applications using GitOps CICD in the form of containerised Kubernetes microservices(pods) leveraging GitHub Actions & ArgoCD, and eventually performing load testing on the solution using Jmeter tool to validate the scaling and high availability aspects.
 
