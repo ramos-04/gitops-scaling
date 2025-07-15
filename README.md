@@ -10,7 +10,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
      1. Terraform 
      2. AWS CLI
      3. Kubectl
-     4. Lens (optional)
+     4. Lens(optional)
 - Please make sure AWS CLI and Terraform software are authenticated with your AWS Cloud account across which you wish to provision the cloud resources.
 
 
@@ -18,19 +18,19 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
 - **Secure Your Root User Account**
     1. Never use the 'root user' for daily tasks. The 'root user' has unrestricted access to all services and resources in your account.
-    2. Enable Multi-Factor Authentication (MFA) for the 'root user'. You can use a virtual MFA (e.g. Google Authenticator, Authy). 
+    2. Enable Multi-Factor Authentication(MFA) for the 'root user'. You can use a virtual MFA(e.g. Google Authenticator, Authy). 
     3. Create a strong, unique Password: Ensure it meets AWS's complexity requirements and is not reused anywhere else. 
-    4. Lock away Root User Credentials - After enabling MFA and creating an admin user (next step), sign out of the root account and only use it for tasks that require root access (e.g. changing account settings, closing the account, interacting with AWS Support plans).
+    4. Lock away Root User Credentials - After enabling MFA and creating an admin user(next step), sign out of the root account and only use it for tasks that require root access (e.g. changing account settings, closing the account, interacting with AWS Support plans).
 
 - **Create an Administrator IAM User**
-    1. Create a new IAM user (e.g. admin)
+    1. Create a new IAM user(e.g. admin)
     2. Attach the AWS managed policy `AdministratorAccess` to this new IAM user. This gives the user full administrative control without being the root user.
     3. Enable MFA for this Administrator User just like the 'root user'
-    4. Generate Access Keys (only if programmatic Access is needed). If you need to use the AWS CLI, SDKs, or tools like Terraform, generate access keys for this user. Store them securely and never embed them directly in code or commit them to source control.
+    4. Generate Access Keys(only if programmatic Access is needed). If you need to use the AWS CLI, SDKs, or tools like Terraform, generate access keys for this user. Store them securely and never embed them directly in code or commit them to source control.
 
 - **Implement Principle of Least Privilege for IAM**
-   1. Create IAM Groups to group the users with similar job functions (e.g., Developers, Security-Auditors, Read-Only).
-   2. Attach permission policies to Groups (Not Users) and then add users to the appropriate groups. This simplifies permission management.
+   1. Create IAM Groups to group the users with similar job functions(e.g., Developers, Security-Auditors, Read-Only).
+   2. Attach permission policies to Groups(Not Users) and then add users to the appropriate groups. This simplifies permission management.
    3. Commence with AWS managed policies, then create customer-managed policies for fine-grained control as needed.
    4. Instead of embedding access keys in applications, use IAM Roles for EC2 instances, Lambda functions, etc. This provides temporary credentials that are automatically rotated, significantly enhancing security.
 
@@ -38,7 +38,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
 - Set up an **AWS Budget** to monitor your spending and receive alerts if your costs exceed or are forecasted to exceed your defined thresholds. Start with a simple monthly budget.
 
-- Define a **Tagging Strategy** (e.g. Project, Environment, Owner, CostCenter) and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
+- Define a **Tagging Strategy**(e.g. Project, Environment, Owner, CostCenter) and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
 
   
 ## Launch and Set Up EKS Cluster and ArgoCD
@@ -78,7 +78,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
   https://karpenter.sh/docs/getting-started/migrating-from-cas/
 
-As a reference, please do not hesitate to use the Karpenter configuration yamls, namely 'nodepool-ec2nodeclass.yaml' and 'karpenter.yaml' stored in this repository at the path 'karpenter/' folder. Alternatively, you can configure them as per your preferences.
+- As a reference, please do not hesitate to use the Karpenter configuration yamls, namely 'nodepool-ec2nodeclass.yaml' and 'karpenter.yaml' stored in this repository at the path 'karpenter/' folder. Alternatively, you can configure them as per your preferences.
 
 - Install Metrics Server in the EKS cluster with the high availability mode 
   ```bash
@@ -145,7 +145,7 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls,
 
       https://argo-cd.readthedocs.io/en/release-1.8/user-guide/private-repositories/
 
-- After performing these one-time steps, the containerised applications, namely cors-proxy-server and mock-target-server, will automatically get deployed in the EKS cluster using GitOps(ArgoCD). A load balancer in AWS Cloud will also get automatically launched, which will make the cors-proxy-server application accessible from the internet. In this way, we have built a CICD framework using a *** pull-based model*** instead of a push-based model, leveraging ***GitOps***.
+- After performing these one-time steps, the containerised applications, namely cors-proxy-server and mock-target-server, will automatically get deployed in the EKS cluster using GitOps(ArgoCD). A load balancer in AWS Cloud will also get automatically launched, which will make the cors-proxy-server application accessible from the internet. In this way, we have built a CICD framework using a ***pull-based model*** instead of a push-based model, leveraging ***GitOps***.
 
 
 ## Load Testing
