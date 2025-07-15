@@ -7,10 +7,10 @@ This repository host source code to launch an EKS cluster using Terraform, spin 
 
 - AWS Cloud account should be created following the best practice guidelines highlighted in the following section. 
 - Ensure the below software are installed in your local machine
-1. Terraform 
-2. AWS CLI
-3. Kubectl
-4. Lens (optional)
+     1. Terraform 
+     2. AWS CLI
+     3. Kubectl
+     4. Lens (optional)
 - Ensure AWS CLI and Terraform software are authenticated with your AWS Cloud account across which you wish to provision the cloud resources.
 
 
