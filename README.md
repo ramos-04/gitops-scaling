@@ -222,7 +222,11 @@ Feel free to refer to the other load testing artifacts(reports, test plan, etc) 
 
 - Tools like ***Kubecost and AWS Compute Optimizer*** can be used to right-size the Kubernetes nodes and resource limits for pods to avoid under-utilization or over-utilization of resources, which will further result in ***cost-saving***.
 
-- Terraform(IAC) should perform the EKS cluster provisioning and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). Post that, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc).
+- Terraform(IAC) should perform the EKS cluster and & other cloud resources provisioning, and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). Post that, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc) within the EKS cluster.
+
+- Terraform state file should be stored and managed ***remotely***(maybe in an S3 bucket) with ***state locking*** enabled. ***Versioning*** and ***continuous automatic backups*** should be enabled for the remotely stored state file.
+
+- ***AWS EKS Auto Mode*** service can be explored which automates the management of your Kubernetes clusters, including provisioning and scaling compute, storage, and networking resources. However, it is important to note that it comes with a cost.
 
 
 ## Troubleshooting
