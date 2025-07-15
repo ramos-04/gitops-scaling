@@ -1,4 +1,4 @@
-# gitops-scaling
+# Scaling Using GitOps and IaC
 
 This repository hosts source code to launch an EKS cluster using Terraform, spin up a powerful scaling solution, build and deploy sample CORS proxy server and a mock target server applications using GitOps CICD in the form of containerised Kubernetes microservices(pods) leveraging GitHub Actions & ArgoCD, and eventually performing load testing on the solution using Jmeter tool to validate the scaling and high availability aspects.
 
@@ -14,7 +14,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 - Please make sure AWS CLI and Terraform software are authenticated with your AWS Cloud account across which you wish to provision the cloud resources.
 
 
-## AWS Account creation
+## AWS Account Creation
 
 - **Secure Your Root User Account**
     1. Never use the 'root user' for daily tasks. The 'root user' has unrestricted access to all services and resources in your account.
@@ -41,7 +41,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 - Define a **Tagging Strategy** (e.g. Project, Environment, Owner, CostCenter) and enforce its use. Activate these tags for cost allocation in the billing console to get granular cost breakdowns.
 
   
-## Launch and set up EKS cluster and ArgoCD
+## Launch and Set Up EKS Cluster and ArgoCD
 
 - Kindly go to the IAC/cluster path
    ```bash
@@ -100,7 +100,7 @@ As a reference, please do not hesitate to use the Karpenter configuration yamls,
 - CI pipelines are already provisioned and stored as 'configuration as code' in the GitHub workflow yaml files of this repository at the path ".github/workflows". As soon as you merge a Pull Request(PR) in the 'main' branch, a CI build will trigger, which will build docker images for the applications, namely cors-proxy-server and mock-target-server, and upload them to the ECR repository. Thus, kindly merge a Pull Request in the 'main' branch to build the applications.
 
 
-## Launch and set up ArgoCD Application (CD using GitOps)
+## Launch and Set Up ArgoCD Application(CD using GitOps)
 
 - Go to the  'IAC/add-ons' path
   ```bash 
@@ -225,7 +225,7 @@ Feel free to refer to the other load testing artifacts(reports, test plan, etc) 
 - Terraform(IAC) should perform the EKS cluster provisioning and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). Post that, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc).
 
 
-## Troubleshooting Section:
+## Troubleshooting
 
 - Error: error: code = Unknown desc = error getting credentials - err: exec: "docker-credential-desktop.exe": executable file not found in $PATH, out: ``
 
