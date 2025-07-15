@@ -93,11 +93,11 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
 ## Continuous Integration(CI) using GitHub Actions
 
-- Create an AWS ECR repository in AWS Cloud, configuring access between it and GitHub Actions. As a best practice, please avoid storing long-term AWS access/secret keys credentials in GitHub Actions. Instead, kindly leverage Web Identity Federation Authentication(OIDC), which offers role-based authentication using short-term term dynamically created tokens. Kindly follow the steps in the document below to establish this sort of authentication. 
+- Create an AWS ECR repository in AWS Cloud, configuring access between it and GitHub Actions. As a best practice, please avoid storing long-term AWS access/secret keys credentials in GitHub Actions. Instead, kindly leverage ***Role based Authentication using OIDC***, which uses short-term term dynamically created tokens. Kindly follow the steps in the document below to establish this sort of authentication. 
 
   https://devopscube.com/github-actions-oidc-aws/
 
-- CI pipelines are already provisioned and stored as 'configuration as code' in the GitHub workflow yaml files of this repository at the path ".github/workflows". As soon as you merge a Pull Request(PR) in the 'main' branch, a CI build will trigger, which will build docker images for the applications, namely cors-proxy-server and mock-target-server, and upload them to the ECR repository. Thus, kindly merge a Pull Request in the 'main' branch to build the applications.
+- CI pipelines are already provisioned and stored as ***Configuration as Code*** in the GitHub workflow yaml files of this repository at the path ".github/workflows". As soon as you merge a Pull Request(PR) in the 'main' branch, a CI build will trigger, which will build docker images for the applications, namely cors-proxy-server and mock-target-server, and upload them to the ECR repository. Thus, kindly merge a Pull Request in the 'main' branch to build the applications.
 
 
 ## Launch and Set Up ArgoCD Application(CD using GitOps)
