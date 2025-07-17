@@ -46,24 +46,6 @@ module "eks_cluster" {
   # If set to `true`, the IAM user or role that creates the EKS cluster will
   # automatically be granted `system:masters` permissions within the cluster's
   # Kubernetes RBAC. This simplifies initial access.
-
-  # This block configures the managed EKS add-ons. These are Amazon-provided controllers that enhance EKS functionality (e.g., networking, DNS).
-  cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
-      configuration_values = jsonencode({
-        env = {
-          WARM_IP_TARGET = "1"
-        }
-      })
-    }
-  }
   
   tags = {
     Environment = "dev"
