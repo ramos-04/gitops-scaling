@@ -10,6 +10,14 @@ terraform {
                  }
 
          }
+
+ # store the state file remotely in cloud storage. Configure the details below as per your setup
+ backend "s3" {
+    bucket       = "<>"
+    key          = "<path to state file>"
+    region       = "<>"
+    use_lockfile = true
+              }
        }
 
 provider "aws" {

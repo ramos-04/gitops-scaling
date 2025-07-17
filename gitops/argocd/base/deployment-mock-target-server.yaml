@@ -5,7 +5,7 @@ metadata:
   labels:
     app: mock-target-server
 spec:
-  replicas: 1 
+  #replicas: 1 
   selector:
     matchLabels:
       app: mock-target-server

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: python-cors-proxy
 spec:
-  replicas: 2 
+  #replicas: 2 
   selector:
     matchLabels:
       app: python-cors-proxy
