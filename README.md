@@ -43,31 +43,35 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
   
 ## Launch and Set Up EKS Cluster and ArgoCD
 
-- Kindly go to the IAC/cluster path
+- Create a new S3 bucket through AWS CLI or Console to store terraform state file remotely in cloud storage. Kindly ensure ***restrictive IAM permissions are added to the bucket, encryption is enabled, versioning is on and automatic backup is configured***
+
+- Please go to the IAC/cluster path
    ```bash
-   $ cd  IAC/cluster
+   cd  IAC/cluster
    
 - Configure the input variables for this terraform project in the 'IAC/cluster/terraform.tfvars' file as per your setup.
 
+- Configure the details of the previously created S3 bucket(for state file) in the 'backend' block of the file 'IAC/cluster/providers.tf' to enable remote state storage.
+
 - Initialize terraform
    ```bash
-   $ terraform init
+   terraform init
 
 - Validate the resources that terraform is about to provision
    ```bash
-   $ terraform plan 
+   terraform plan 
    
 - Provision the resources 
    ```bash
-   $ terraform apply --auto-approve
+   terraform apply --auto-approve
 
 - Gain access to the EKS cluster from your local machine. This command will create a kubeconfig file on your local machine, which will contain information about the EKS cluster.
    ```bash
-   $ aws eks update-kubeconfig --region <region-name> --name <cluster-name>
+   aws eks update-kubeconfig --region <region-name> --name <cluster-name>
 
 - Check whether you can access the EKS cluster through the command line. Alternatively, should you be using the Lens tool, feel free to validate the access to the cluster using it.
    ```bash
-   $ kubectl get nodes
+   kubectl get nodes
 
 - This setup will launch a base EKS-managed node group, which will host critical Kubernetes add-on software like karpenter, metrics server, coredns, etc. Besides that, Karpenter will provision and manage node pools to host the remaining application workloads.
 
@@ -82,8 +86,8 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
 - Install Metrics Server in the EKS cluster with the high availability mode 
   ```bash
-  $ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
-  $ helm upgrade --install metrics-server metrics-server/metrics-server --set replicas=2
+  helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+  helm upgrade --install metrics-server metrics-server/metrics-server --set replicas=2
   ```
   
   https://github.com/kubernetes-sigs/metrics-server?tab=readme-ov-file#high-availability
@@ -104,21 +108,27 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
 - Go to the  'IAC/add-ons' path
   ```bash 
-  $ cd ../add-ons
+  cd ../add-ons
+
+- Configure the details of the previously created S3 bucket(for state file) in the 'backend' block of the file 'IAC/add-ons/providers.tf' to enable remote state storage.
    
 - You'll need to fetch the outputs from the 'IAC/cluster' terraform project and pass it to the current 'IAC/add-ons' terraform project. 
   ```bash 
-  $ CLUSTER_NAME=$(terraform -chdir=../cluster output -raw cluster_name)
-  $ CLUSTER_ENDPOINT=$(terraform -chdir=../cluster output -raw cluster_endpoint)
-  $ AWS_REGION=$(terraform -chdir=../cluster output -raw aws_region)
-  $ ARGOCD_NAMESPACE=$(terraform -chdir=../cluster output -raw argocd_namespace)
+  CLUSTER_NAME=$(terraform -chdir=../cluster output -raw cluster_name) \
+  CLUSTER_ENDPOINT=$(terraform -chdir=../cluster output -raw cluster_endpoint) \
+  AWS_REGION=$(terraform -chdir=../cluster output -raw aws_region) \
+  ARGOCD_NAMESPACE=$(terraform -chdir=../cluster output -raw argocd_namespace)
   ```
   
 - Configure the remaining input variables for this terraform project as per your setup in the 'IAC/add-ons/terraform.tfvars' file.
 
+- Initialize terraform
+   ```bash
+   terraform init
+
 - Validate the resources that terraform is about to provision
   ```bash 
-  $ terraform plan \
+  terraform plan \
       -var="cluster_name=${CLUSTER_NAME}" \
       -var="cluster_endpoint=${CLUSTER_ENDPOINT}" \
       -var="aws_region=${AWS_REGION}" \
@@ -126,7 +136,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
 - Provision the resources 
   ```bash 
-  $ terraform apply --auto-approve \
+  terraform apply --auto-approve \
       -var="cluster_name=${CLUSTER_NAME}" \
       -var="cluster_endpoint=${CLUSTER_ENDPOINT}" \
       -var="aws_region=${AWS_REGION}" \
@@ -224,9 +234,17 @@ Feel free to refer to the other load testing artifacts(reports, test plan, etc) 
 
 - Terraform(IAC) should perform the EKS cluster and & other cloud resources provisioning, and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). Post that, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc) within the EKS cluster.
 
-- Terraform state file should be stored and managed ***remotely***(maybe in an S3 bucket) with ***state locking*** enabled. ***Versioning*** and ***continuous automatic backups*** should be enabled for the remotely stored state file.
-
 - ***AWS EKS Auto Mode*** service can be explored which automates the management of your Kubernetes clusters, including provisioning and scaling compute, storage, and networking resources. However, it is important to note that it comes with a cost.
+
+- Terraform ***linting*** can be used to improve coding standards. Furthermore, ***unit test cases*** can be written for the terraform code as well as the application code.
+
+- ***CICD using GitOps*** can be constructed for terraform IAC deployments as well.
+
+- Efficient repository and folder structure can be used to manage different ***environments***(dev,stage,uat,production).
+
+- Security can be enforced using ***Policy as Code*** framework leveraging tools like ***Open Policy Agent(OPA) or Kyverno***.
+
+- Manual steps observed in this setup can be further automated end to end.
 
 
 ## Troubleshooting
@@ -239,5 +257,9 @@ Feel free to refer to the other load testing artifacts(reports, test plan, etc) 
  
   **Solution**: Please check the pod events by describing the pod to seek more insight on the reasons for failure. If it says, no memory available, or no nodes available to run pods, kindly ensure the base EKS managed node group that you have launched to run critical cluster add-ons like coredns, kube-proxy, and karpenter itself has enough nodes with enough CPU and Memory capacity.
 
-
+- Error: HPA scaling may fail to scale, terminating the pods as soon as they are getting launched
+ 
+  **Solution**: This can be due to the coexistence of ArgoCD(GitOps) and HPA. Kindly refer the following link for solution.
+                https://www.alibabacloud.com/help/en/ack/distributed-cloud-container-platform-for-kubernetes/user-guide/applications-using-hpa#:~:text=Argo%20CD%20periodically%20synchronizes%20the,Pod%20Autoscaling%20(HPA)%20feature.
+  
 
