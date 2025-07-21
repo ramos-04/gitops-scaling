@@ -51,11 +51,11 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
    
 - Configure the input variables for this terraform project in the 'IAC/cluster/terraform.tfvars' file as per your setup.
 
-- Configure the details of the previously created S3 bucket(for state file) in the 'backend' block of the file 'IAC/cluster/providers.tf' to enable remote state storage.
+- Configure the input variables for the remote state backend in the 'IAC/cluster/backend-variables.hcl' file as per your setup. Kindly configure the s3 bucket details which you provisioned earlier to store the state file.
 
 - Initialize terraform
    ```bash
-   terraform init
+   terraform init -backend-config=backend-variables.hcl
 
 - Validate the resources that terraform is about to provision
    ```bash
