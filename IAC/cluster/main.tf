@@ -1,3 +1,9 @@
+# Fetch the EKS cluster access token for authentication
+data "aws_eks_cluster_auth" "cluster_auth_token" {
+  name = module.eks_cluster.cluster_name
+}
+
+
 # Fetch default VPC ID
   data "aws_vpc" "default" {
   default = true
