@@ -1,2 +1,2 @@
-aws_region       = "eu-north-1"
-cluster_name     = "gitops-eks-cluster"
+aws_region       = ""
+cluster_name     = ""
