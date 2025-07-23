@@ -82,7 +82,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
 
   https://karpenter.sh/docs/getting-started/migrating-from-cas/
 
-- As a reference, please do not hesitate to use the Karpenter configuration yamls, namely 'nodepool-ec2nodeclass.yaml' and 'karpenter.yaml' stored in this repository at the path 'karpenter/' folder. Alternatively, you can configure them as per your preferences.
+- As a reference, please do not hesitate to use the Karpenter configuration yaml namely 'nodepool-ec2nodeclass.yaml' stored in this repository at the path 'karpenter/' folder. Alternatively, you can configure them as per your preferences.
 
 - Install Metrics Server in the EKS cluster with the high availability mode 
   ```bash
