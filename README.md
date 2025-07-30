@@ -226,8 +226,20 @@ Feel free to refer to the other load testing artifacts(reports, test plan, etc) 
 
 - As depicted in our load testing report, we have achieved a success rate of 91.34% and an error rate of 8.66% with the HTTP responses. The error rate occurred as our applications namely cors-proxy-server and target-mock-server, are simple sample applications with basic code handling. They are not robustly coded, production-ready applications. To achieve robust scaling with 0% error rate, these applications should be coded more efficiently, handling all the edge cases. 
 
-- This setup has been tested with a traffic rising from 0 to 1000 requests per second. For higher loads like 10k, 100k requests/second, you do not need to explicitly modify the existing infrastructure configurations, as we have already configured Karpenter to perform automatic scale-up and scale-down operations as the traffic increases and decreases, respectively.
-  
+- This setup has been tested with a traffic rising from 0 to 1000 requests per second. For higher loads like 10k, 100k requests/second, you do not need to explicitly modify the existing infrastructure compute configurations, as we have already configured Karpenter to perform automatic scale-up and scale-down operations as the traffic increases and decreases, respectively.
+
+- Scaling to ***Millions*** of Users - 
+   
+  When we think about scaling to millions of users, usually the first thing that pops in our mind is scaling of the compute(EC2 instances, Lambda, Containers, etc). But that's not really the complete game. It is just a part of the game. We need to consider other different layers of the product architecture as well in terms of scaling. To exemplify, we should consider scaling the other layers namely network, load balancer, Database, etc. We need to widen our horizon to covers other scaling areas like below - 
+
+     1. Ensure ***DNS and other networking layers*** are automatic scalable and highly available.
+     2. Ensure ***Load Balancer*** supports out of the box scaling.
+     3. ***Offload static frontend caching data*** from the web instance tier to some object storage like S3 and then set up a CDN like CloudFront on top of it to achieve global caching and other perks.
+     4. Establishing a data caching layer using ***AWS Elastic Cache***.
+     5. Leverage ***read replicas and multi AZ*** automatic scalable databases like AWS RDS, DynamoDB and MongoDB Atlas.
+     6. Setting up ***observability and monitoring*** suites using tools like Prometheus, Grafana, Dynatrace or AWS Xray. Monitor the metrics like ***response times*** to identify high latency areas so that you can rectify application slowness and improve the speed of your application.
+     7. Leverage ***AI and ML based solutions*** like AWS DevOps Guru and AWS CodeGuru which can monitor your infrastructure and application code respectively and provide insightful recommendations on how can you reduce application slowness, improve scaling, etc.
+
 - As a good practice, high availability should be configured for the cluster add-ons software as well. ***Pod Disruption Budget*** can also be leveraged to boost high availability.
 
 - Tools like ***Kubecost and AWS Compute Optimizer*** can be used to right-size the Kubernetes nodes and resource limits for pods to avoid under-utilization or over-utilization of resources, which will further result in ***cost-saving***.
