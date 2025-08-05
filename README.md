@@ -73,16 +73,16 @@ This repository contains source code to provision an EKS cluster using Terraform
    ```bash
    kubectl get nodes
 
-- This setup will launch a base EKS-managed node group, which will host critical Kubernetes add-on software like karpenter, metrics server, coredns, etc. Besides that, Karpenter will provision and manage node pools to host the remaining application workloads.
+- This setup will launch an EKS cluster with a base EKS-managed node group, which will host critical Kubernetes add-on software like karpenter, metrics server, coredns, etc. Additionally, it will also automatically install ArgoCD software in the EKS cluster.
 
 
 ## Installation and Configuration of the Scaling Software
 
-- Install Karpenter software in the EKS cluster by kindly following the instructions from the official documentation below. This documentation cites steps to install Karpenter in an already provisioned EKS cluster.
+- Kindly install Karpenter software in the EKS cluster by following the instructions from the official documentation below. This documentation showcases steps to install Karpenter in an already provisioned EKS cluster.
 
   https://karpenter.sh/docs/getting-started/migrating-from-cas/
 
-- As a reference, please do not hesitate to use the Karpenter configuration yaml namely 'nodepool-ec2nodeclass.yaml' stored in this repository at the path 'karpenter/' folder. Alternatively, you can configure them as per your preferences.
+- As a reference, do not hesitate to use the Karpenter configuration yaml namely 'nodepool-ec2nodeclass.yaml' stored in this repository at the path 'karpenter/'. Alternatively, you can configure it as per your preferences.
 
 - Install Metrics Server in the EKS cluster with the high availability mode 
   ```bash
@@ -97,11 +97,11 @@ This repository contains source code to provision an EKS cluster using Terraform
 
 ## Continuous Integration(CI) using GitHub Actions
 
-- Create an AWS ECR repository in AWS Cloud, configuring access between it and GitHub Actions. As a best practice, please avoid storing long-term AWS access/secret keys credentials in GitHub Actions. Instead, kindly leverage ***Role based Authentication using OIDC***, which uses short-term term dynamically created tokens. Kindly follow the steps in the document below to establish this sort of authentication. 
+- Create an AWS ECR repository in AWS Cloud, configuring it to access GitHub Actions. As a best practice, please avoid storing long-term AWS access/secret keys credentials in GitHub Actions. Instead, kindly leverage ***Role based Authentication using OIDC***, which uses short-term term dynamically created tokens to establish authentication & authorization between GitHub Actions and AWS ECR service. Kindly follow the steps in the document below to establish this sort of authentication. 
 
   https://devopscube.com/github-actions-oidc-aws/
 
-- CI pipelines are already provisioned and stored as ***Configuration as Code*** in the GitHub workflow yaml files of this repository at the path ".github/workflows". As soon as you merge a Pull Request(PR) in the 'main' branch, a CI build will trigger, which will build docker images for the applications, namely cors-proxy-server and mock-target-server, and upload them to the ECR repository. Thus, kindly merge a Pull Request in the 'main' branch to build the applications.
+- CI pipelines are already provisioned and stored as ***Configuration as Code*** in the GitHub workflow yaml manifest of this repository at the path ".github/workflows". As soon as you merge a Pull Request(PR) in the 'main' branch, a CI build will trigger, which will build docker images for the applications, namely cors-proxy-server and mock-target-server, and upload them to the ECR repository. Thus, kindly merge a Pull Request in the 'main' branch to build the applications.
 
 
 ## Launch and Set Up ArgoCD Application(CD using GitOps)
@@ -151,11 +151,11 @@ This repository contains source code to provision an EKS cluster using Terraform
       https://argo-cd.readthedocs.io/en/latest/try_argo_cd_locally/
 
 
-- Configure Git Credentials in the ArgoCD application by following the steps from the official documentation below.
+- Configure Git access credentials in ArgoCD so that it can synch with Git by following the steps from the official documentation below.
 
       https://argo-cd.readthedocs.io/en/release-1.8/user-guide/private-repositories/
 
-- After performing these one-time steps, the containerised applications, namely cors-proxy-server and mock-target-server, will automatically get deployed in the EKS cluster using GitOps(ArgoCD). A load balancer in AWS Cloud will also get automatically launched, which will make the cors-proxy-server application accessible from the internet. In this way, we have built a CICD framework using a ***pull-based model*** instead of a push-based model, leveraging ***GitOps***.
+- After performing these one-time steps, the containerised applications, namely cors-proxy-server and mock-target-server, will automatically get deployed in the EKS cluster using GitOps(ArgoCD). A load balancer in AWS Cloud will also automatically get launched, which will make the cors-proxy-server application accessible from the internet. In this way, we have built a CICD framework using a ***pull-based model*** instead of a push-based model, leveraging ***GitOps***.
 
 
 ## Load Testing
@@ -164,7 +164,7 @@ This repository contains source code to provision an EKS cluster using Terraform
 
 - Initiate load testing by sending multiple requests to the cors-proxy-server application.
 
-- As the load increases, CPU consumption of the cors-proxy-server and mock-target-server applications will spike, and additional replica pods for them will automatically be created by ***Horizontal Pod Autoscaler(HPA)***. Moving ahead, should the capacity of the Kubernetes node(EC2 machine) that holds these pods become full, Karpenter will automatically launch additional Kubernetes nodes(EC2 machines) to host and accommodate further replica pods. Similarly, as the load drops, Karpenter will automatically decommission the unnecessary nodes, and HPA will decommission the unnecessary replica pods. Thus, in this way, we have achieved seamless scaling at the ***kubernetes pod*** and ***kubernetes node*** levels.
+- As the load increases, CPU consumption of the cors-proxy-server and mock-target-server applications will spike, and additional replica pods for them will automatically be created by ***Horizontal Pod Autoscaler(HPA)***. Moving ahead, should the capacity of the Kubernetes node(EC2 machine) that holds these pods become full, Karpenter will automatically launch additional Kubernetes nodes(EC2 machines) to host and accommodate further replica pods. Similarly, as the load drops, Karpenter will automatically decommission the unnecessary nodes, and HPA will decommission the unnecessary replica pods. Thus, in this way, we have achieved seamless automatic scale-up and scale-down operations at the ***kubernetes pod*** and ***kubernetes node*** levels.
 
 - A steady setup with minimum pods and minimum Kubernetes nodes running
 
@@ -230,29 +230,31 @@ Feel free to refer to the other load testing artifacts(reports, test plan, etc) 
 
 - Scaling to ***Millions*** of Users - 
    
-  When we think about scaling to millions of users, usually the first thing that pops in our mind is scaling of the compute(EC2 instances, Lambda, Containers, etc). But that's not really the complete game. It is just a part of the game. We need to consider other different layers of the product architecture as well in terms of scaling. To exemplify, we should consider scaling the other layers namely network, load balancer, Database, etc. We need to widen our horizon to covers other scaling areas like below - 
+  When we think about scaling to millions of users, usually the first thing that pops in our mind is scaling of the compute(EC2 instances, Lambda, Containers, etc). But that's not really the whole game, instead it is just a part of the game. We need to consider other different layers of the product architecture as well for scaling. To exemplify, we should also consider scaling layers like Networking, Load balancing, Data Tier(databases, object storage), etc. We need to widen our horizon to cover other scaling aspects like below - 
 
      1. Ensure ***DNS and other networking layers*** are automatic scalable and highly available.
      2. Ensure ***Load Balancer*** supports out of the box scaling.
-     3. ***Offload static frontend caching data*** from the web instance tier to some object storage like S3 and then set up a CDN like CloudFront on top of it to achieve global caching and other perks.
+     3. ***Offload static frontend caching data*** from the web instance tier to an object storage like S3 and then set up a CDN like CloudFront on top of it to achieve global caching and other perks.
      4. Establishing a data caching layer using ***AWS Elastic Cache***.
      5. Leverage ***read replicas and multi AZ*** automatic scalable databases like AWS RDS, DynamoDB and MongoDB Atlas.
-     6. Setting up ***observability and monitoring*** suites using tools like Prometheus, Grafana, Dynatrace or AWS Xray. Monitor the metrics like ***response times*** to identify high latency areas so that you can rectify application slowness and improve the speed of your application.
+     6. Setting up ***observability and monitoring*** suites using tools like Prometheus, Grafana, Dynatrace or AWS Xray. Monitor the metrics like ***response times*** to identify high latency areas, so that you can rectify application slowness, improving the speed of your application.
      7. Leverage ***AI and ML based solutions*** like AWS DevOps Guru and AWS CodeGuru which can monitor your infrastructure and application code respectively and provide insightful recommendations on how can you reduce application slowness, improve scaling, etc.
 
-- As a good practice, high availability should be configured for the cluster add-ons software as well. ***Pod Disruption Budget*** can also be leveraged to boost high availability.
+- As a good practice, high availability should be configured for the cluster add-ons software(coredns, karpenter, metrics server etc) as well. ***Pod Disruption Budget*** can also be leveraged to boost high availability.
 
-- Tools like ***Kubecost and AWS Compute Optimizer*** can be used to right-size the Kubernetes nodes and resource limits for pods to avoid under-utilization or over-utilization of resources, which will further result in ***cost-saving***.
+- Tools like ***Kubecost and AWS Compute Optimizer*** can be used to right-size Kubernetes nodes and identify resource limits for pods to avoid under-utilization or over-utilization of resources, which will further result in ***cost-saving***.
 
-- Terraform(IAC) should perform the EKS cluster and & other cloud resources provisioning, and complete ArgoCD bootstrapping(installation of ArgoCD software and ArgoCD Application). Post that, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the applications(cors-proxy-server, target-mock-server, etc) within the EKS cluster.
+- End to end automation should be built using ***GitOps IaC Bridge Module*** which will comprise of two stages. In the first stage, terraform(IAC) should perform the EKS cluster and other cloud resources provisioning, while also bootstrapping GitOps(installation of ArgoCD software and ArgoCD Applicationset Resource in the cluster). In the second stage, GitOps should take over and automatically install all the cluster add-ons(karpenter, metrics server, etc) and the microservice applications(cors-proxy-server, target-mock-server, etc) within the EKS cluster.
 
 - ***AWS EKS Auto Mode*** service can be explored which automates the management of your Kubernetes clusters, including provisioning and scaling compute, storage, and networking resources. However, it is important to note that it comes with a cost.
 
-- Terraform ***linting*** can be used to improve coding standards. Furthermore, ***unit test cases*** can be written for the terraform code as well as the application code.
+- Terraform ***linting*** can be used to improve coding standards. Furthermore, ***unit test cases*** can be written for the IaC code and the application code.
 
 - ***CICD using GitOps*** can be constructed for terraform IAC deployments as well.
 
-- Efficient repository and folder structure can be used to manage different ***environments***(dev,stage,uat,production).
+- Efficient repository and folder structure can be used to manage different ***environments*** for IaC and GitOps(dev, stage, uat, production).
+
+- Robust ***branching strategy*** should be identified and implemented to promote releases smoothly.
 
 - Security can be enforced using ***Policy as Code*** framework leveraging tools like ***Open Policy Agent(OPA) or Kyverno***.
 
