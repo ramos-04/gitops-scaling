@@ -1,6 +1,6 @@
 # Scaling and High Availability Using GitOps and IaC
 
-This repository hosts source code to launch an EKS cluster using Terraform, spin up a powerful scaling solution, build and deploy sample CORS proxy server and a mock target server applications using GitOps CICD in the form of containerised Kubernetes microservices(pods) leveraging GitHub Actions & ArgoCD, and eventually performing load testing on the solution using Jmeter tool to validate the scaling and high availability aspects.
+This repository contains source code to provision an EKS cluster using Terraform, spin up a powerful Kubernetes-based scaling solution, and build and deploy a sample CORS proxy server along with a mock target server as containerized microservices(pods). It leverages GitOps CI/CD practices using GitHub Actions and ArgoCD for automated deployment, and includes load testing using the JMeter tool to validate the system’s scalability and high availability.
 
 
 ## Prerequisites:
@@ -11,7 +11,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
      2. AWS CLI
      3. Kubectl
      4. Lens(optional)
-- Please make sure AWS CLI and Terraform software are authenticated with your AWS Cloud account across which you wish to provision the cloud resources.
+- Please make sure AWS CLI and Terraform software are authenticated with your AWS Cloud account across which you wish to provision cloud resources.
 
 
 ## AWS Account Creation
@@ -26,7 +26,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
     1. Create a new IAM user(e.g. admin)
     2. Attach the AWS managed policy `AdministratorAccess` to this new IAM user. This gives the user full administrative control without being the root user.
     3. Enable MFA for this 'administrator user' just like the 'root user'
-    4. Generate Access Keys(only if programmatic access is needed). If you need to use the AWS CLI, SDKs, or tools like Terraform, generate access keys for this user. Store them securely and never embed them directly in code or commit them to source control.
+    4. Generate Access Keys(only if programmatic access is needed). If you need to use AWS CLI, SDKs, or tools like Terraform, generate access keys for this user. Store them securely and never embed them directly in code or commit them to source control. Kindly prefer using **SSO based authentication and IRSA(IAM Role for Service Account)** which are more secured approaches.
 
 - **Implement Principle of Least Privilege for IAM**
    1. Create IAM Groups to group the users with similar job functions(e.g. Developers, Security-Auditors, Read-Only).
@@ -43,15 +43,15 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
   
 ## Launch and Set Up EKS Cluster and ArgoCD
 
-- Create a new S3 bucket through AWS CLI or Console to store terraform state file remotely in cloud storage. Kindly ensure ***restrictive IAM permissions are added to the bucket, encryption is enabled, versioning is on and automatic backup is configured***
+- Create a new S3 bucket using AWS CLI or Console to store terraform state file remotely in cloud storage. Kindly ensure ***restrictive IAM permissions are added to the bucket, encryption is enabled, versioning is on and automatic backup is configured***
 
-- Please go to the IAC/cluster path
+- Please go to the path 'IAC/cluster'
    ```bash
    cd  IAC/cluster
    
-- Configure the input variables for this terraform project in the 'IAC/cluster/terraform.tfvars' file as per your setup.
+- Configure input variables for this terraform project in the 'IAC/cluster/terraform.tfvars' file as per your setup and preferences.
 
-- Configure the input variables for the remote state backend in the 'IAC/cluster/backend-variables.hcl' file as per your setup. Kindly configure the s3 bucket details which you provisioned earlier to store the state file.
+- Configure input variables for the remote state backend in the 'IAC/cluster/backend-variables.hcl' file as per your setup. Kindly add the details of the s3 bucket in this file, which you provisioned earlier to store the state file.
 
 - Initialize terraform
    ```bash
@@ -69,7 +69,7 @@ This repository hosts source code to launch an EKS cluster using Terraform, spin
    ```bash
    aws eks update-kubeconfig --region <region-name> --name <cluster-name>
 
-- Check whether you can access the EKS cluster through the command line. Alternatively, should you be using the Lens tool, feel free to validate the access to the cluster using it.
+- Check whether you can access the EKS cluster through command line. Alternatively, should you be using the Lens tool, feel free to validate the access to the cluster using it.
    ```bash
    kubectl get nodes
 
