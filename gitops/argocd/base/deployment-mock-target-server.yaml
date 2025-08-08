@@ -26,7 +26,7 @@ spec:
         workload-type: karpenter-exclusive
       containers:
         - name: mock-target-server-container
-          image: 938552122815.dkr.ecr.eu-north-1.amazonaws.com/eks-gitops-repository:mock-target-server-app 
+          image: <image-endpoint>:mock-target-server-app 
           ports:
             - containerPort: 3000
           resources: # define the resource limits

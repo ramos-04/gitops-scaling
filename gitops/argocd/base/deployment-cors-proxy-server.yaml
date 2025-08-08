@@ -26,7 +26,7 @@ spec:
         workload-type: karpenter-exclusive
       containers:
       - name: python-cors-proxy
-        image: 938552122815.dkr.ecr.eu-north-1.amazonaws.com/eks-gitops-repository:cors-proxy-server-app   # Replace with your image name
+        image: <image endpoint>:cors-proxy-server-app   # Replace with your image name
         ports:
         - containerPort: 8080
         env:
