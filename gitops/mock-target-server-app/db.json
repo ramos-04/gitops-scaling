@@ -1,0 +1,10 @@
+{
+  "posts": [
+    { "id": "1", "title": "Mock Post 1", "body": "This is content for mock post 1." },
+    { "id": "2", "title": "Mock Post 2", "body": "This is content for mock post 2." }
+  ],
+  "todos": [
+    { "id": "1", "title": "Mock Todo 1", "completed": false },
+    { "id": "2", "title": "Mock Todo 2", "completed": true }
+  ]
+}

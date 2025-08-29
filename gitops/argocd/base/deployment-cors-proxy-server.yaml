@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-cors-proxy
+  labels:
+    app: python-cors-proxy
+spec:
+  replicas: 0 
+  selector:
+    matchLabels:
+      app: python-cors-proxy
+  template:
+    metadata:
+      labels:
+        app: python-cors-proxy
+    spec:
+      topologySpreadConstraints:
+        # Spread across Availability Zones to achieve high availability
+        - maxSkew: 1 # Max difference of 1 pod between any two zones
+          topologyKey: topology.kubernetes.io/zone # Spread across AZs
+          whenUnsatisfiable: DoNotSchedule # Do not schedule if this constraint cannot be met
+          labelSelector:
+            matchLabels:
+              app: python-cors-proxy # Select pods with label for this constraint
+      nodeSelector:
+        workload-type: karpenter-exclusive
+      containers:
+      - name: python-cors-proxy
+        image: <image-name>   # Replace with your image name
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT # Matches the port the Flask app listens on
+          value: "8080"
+        # Uncomment and configure these for production security:
+        # - name: ALLOWED_ORIGINS
+        #   value: "https://your-frontend-app.com,http://localhost:3000"
+        # - name: ALLOWED_TARGET_HOSTS
+        #   value: "<>"
+        resources:
+          requests:
+            cpu: "500m"
+          limits:
+            cpu: "700m"
+      tolerations:
+        - key: "workload.k8s.io/karpenter-exclusive-app"
+          operator: "Exists" # Matches any value for this key
+          effect: "NoSchedule"

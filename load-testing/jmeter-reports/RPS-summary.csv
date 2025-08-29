@@ -1,0 +1,3 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+Get HTTP Request CORS Proxy Sever,39727,22174,200,215303,43492.65,8.657%,92.96867,62.29,19.82,686.1
+TOTAL,39727,22174,200,215303,43492.65,8.657%,92.96867,62.29,19.82,686.1

@@ -1,0 +1,16 @@
+# Example LoadBalancer Service for your CORS proxy. This service will launch an a external load balancer in AWS Cloud
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-cors-proxy-loadbalancer
+  labels:
+    app: python-cors-proxy
+spec:
+  #type: LoadBalancer
+  type: ClusterIP
+  selector:
+    app: python-cors-proxy 
+  ports:
+    - protocol: TCP
+      port: 80 # The port clients will connect to on the load balancer
+      targetPort: 8080 # The port your proxy container is listening on

@@ -1,0 +1,77 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: default
+spec:
+  template:
+    metadata:
+      labels:
+         # custom label to identify the karpenter nodes
+         workload-type: karpenter-exclusive
+    spec:
+      requirements:  # 'requirements' define constraints on the types of nodes Karpenter can provision. 
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        # Directs Karpenter to provision nodes in these specific AWS Availability Zones (AZs).
+        # This is crucial for high availability, ensuring your applications are spread across multiple failure domains.
+        - key: topology.kubernetes.io/zone
+          operator: In
+          values:
+            - eu-north-1a 
+            - eu-north-1b
+            - eu-north-1c
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: ["on-demand"]
+        - key: "node.kubernetes.io/instance-type" 
+          operator: In
+          values: ["m5.large"] # t3.micro free tier supported
+      # 'nodeClassRef' links this NodePool to an EC2NodeClass resource. The EC2NodeClass defines AWS-specific parameters for node provisioning, such as IAM role, AMI, security groups, and subnet selection.
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: default
+      taints:
+        - key: "workload.k8s.io/karpenter-exclusive-app"
+          effect: "NoSchedule"
+      expireAfter: 720h # 30 * 24h = 720h
+  limits:
+    # This limits the total combined CPU across all nodes managed by this NodePool to 20 cores. Karpenter will not provision new nodes if doing so would exceed this limit.
+    cpu: 20
+  # The 'disruption' block configures Karpenter's node termination behavior, ensuring efficient use of resources and proactive node lifecycle management.
+  disruption:
+    # 'consolidationPolicy' determines when Karpenter should attempt to consolidate nodes.
+    # `WhenEmptyOrUnderutilized`: Karpenter will terminate nodes that are empty or underutilized (e.g., a larger instance can be replaced by a smaller one while still accommodating all pods).
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    # 'consolidateAfter' specifies how long Karpenter should wait after a node becomes underutilized before attempting to consolidate it.
+    consolidateAfter: 1m
+---
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  role: "KarpenterNodeRole-gitops-eks-cluster" 
+  # 'amiSelectorTerms' defines how Karpenter selects the Amazon Machine Image (AMI) for the nodes it provisions.
+  amiSelectorTerms:
+    - alias: "al2023@v20250704"
+  blockDeviceMappings:
+    - deviceName: /dev/xvda # Standard device name for the root volume on Linux AMIs
+      ebs:
+        volumeSize: 200Gi # Desired root volume size in GiB 
+        volumeType: gp3 # Recommended volume type for better performance/cost control
+        iops: 3000      # Recommended default IOPS for gp3 (min is 3000)
+        throughput: 125 # Recommended default Throughput for gp3 (min is 125)
+        deleteOnTermination: true # Usually true for ephemeral nodes
+  # 'subnetSelectorTerms' defines how Karpenter selects subnets for launching instances. Instances will be launched in subnets that match these criteria.   
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "gitops-eks-cluster" 
+  # 'securityGroupSelectorTerms' defines how Karpenter selects security groups for the instances it launches. These security groups must allow necessary traffic for the EKS nodes (e.g., API server communication, pod-to-pod communication).
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "gitops-eks-cluster" 

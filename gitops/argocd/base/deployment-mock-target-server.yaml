@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-target-server
+  labels:
+    app: mock-target-server
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: mock-target-server
+  template:
+    metadata:
+      labels:
+        app: mock-target-server
+    spec:
+      topologySpreadConstraints:
+        # Spread across Availability Zones to achieve high availability
+        - maxSkew: 1 # Max difference of 1 pod between any two zones
+          topologyKey: topology.kubernetes.io/zone # Spread across AZs
+          whenUnsatisfiable: DoNotSchedule # Do not schedule if this constraint cannot be met
+          labelSelector:
+            matchLabels:
+              app: mock-target-server # Select pods with label for this constraint
+      nodeSelector:
+        workload-type: karpenter-exclusive
+      containers:
+        - name: mock-target-server-container
+          image: <image-name>
+          ports:
+            - containerPort: 3000
+          resources: # define the resource limits
+            requests:
+              cpu: "500m"
+            limits:
+              cpu: "700m"
+      tolerations:
+        - key: "workload.k8s.io/karpenter-exclusive-app"
+          operator: "Exists" # Matches any value for this key
+          effect: "NoSchedule"
