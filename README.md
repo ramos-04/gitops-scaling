@@ -21,13 +21,11 @@ This repository contains source code to provision an EKS cluster using Terraform
    ```bash
    cd  IAC/cluster
    
-- Configure input variables for this terraform project in the 'IAC/cluster/terraform.tfvars' file as per your setup and preferences.
-
-- Configure input variables for the remote state backend in the 'IAC/cluster/backend-variables.hcl' file as per your setup. Kindly add the details of the s3 bucket in this file, which you provisioned earlier to store the state file.
+- Configure input variables for this terraform project by creating a new file namely 'IAC/cluster/terraform.tfvars' as per your setup and preferences. Configure the 'backend' block in the file 'IAC/cluster/providers.tf' to enable remote state storage.
 
 - Initialize terraform
    ```bash
-   terraform init -backend-config=backend-variables.hcl
+   terraform init 
 
 - Validate the resources that terraform is about to provision
    ```bash
@@ -82,7 +80,7 @@ This repository contains source code to provision an EKS cluster using Terraform
   ```bash 
   cd ../add-ons
 
-- Configure the details of the previously created S3 bucket(for state file) in the 'backend' block of the file 'IAC/add-ons/providers.tf' to enable remote state storage.
+- Configure input variables for this terraform project by creating a new file namely 'IAC/add-ons/terraform.tfvars' as per your setup and preferences. Configure the 'backend' block in the file 'IAC/add-ons/providers.tf' to enable remote state storage.
    
 - You'll need to fetch the outputs from the 'IAC/cluster' terraform project and pass it to the current 'IAC/add-ons' terraform project. 
   ```bash 
@@ -92,8 +90,6 @@ This repository contains source code to provision an EKS cluster using Terraform
   ARGOCD_NAMESPACE=$(terraform -chdir=../cluster output -raw argocd_namespace)
   ```
   
-- Configure the remaining input variables for this terraform project as per your setup in the 'IAC/add-ons/terraform.tfvars' file.
-
 - Initialize terraform
    ```bash
    terraform init
